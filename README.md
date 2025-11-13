@@ -128,6 +128,8 @@ make bash
 ### Workspace/src
 
 * I will soon add a workflow for reverse engineering using many tools.
+* I will soon add a workflow for debugging with gdb.
+* Clang.
 
 ### Workspace/tutorials
 
