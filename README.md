@@ -1,145 +1,252 @@
 # Lang Workbench
 
-**Lang Workbench** is a multi-language programming and learning environment built with Docker and other tools (compilers, debuggers, etc...). It allows users to work from their host system while maintaining a completely isolated and cross-platform environment.
-The repository also includes a tutorials section, where I will add little by little courses and tutorials about core programming concepts (programming paradigms, data structures and algorithms, design patterns, cryptography, etc..). Note that for now all courses and tutorials will be in C++.
+A self-contained, cross-architecture polyglot development environment running entirely in Docker. It provides a single container with compilers, interpreters, assemblers, debuggers, and cross-compilation toolchains for 13 languages — including native x86-64, ARM, and RISC-V assembly executed under QEMU emulation.
+
+This is not a tutorial and not an application. It is a working infrastructure layer — a consistent, isolated workspace a developer can clone, start, and immediately compile and run code in any supported language, on any host machine, without installing a single toolchain locally.
 
 ---
 
-## Project Structure
+## Stack
+
+| Layer | Technology |
+| --- | --- |
+| Container runtime | Docker + Docker Compose |
+| Base image | Ubuntu 24.04 |
+| Build orchestration | Makefile |
+| Cross-architecture emulation | QEMU (ARM, RISC-V) |
+
+---
+
+## Language Support
+
+| Language | Toolchain |
+| --- | --- |
+| Bash | bash |
+| x86-64 Assembly | GCC (nostdlib) |
+| ARM Assembly | aarch64-linux-gnu-gcc + QEMU |
+| RISC-V Assembly | riscv64-linux-gnu-gcc + QEMU |
+| C | GCC |
+| C++ | G++ |
+| C# | Mono (mcs) |
+| Rust | rustc |
+| Go | go |
+| Java | OpenJDK 21 |
+| PHP | php-cli |
+| Python | python3 |
+| JavaScript | Node.js |
+
+---
+
+## Architecture
 
 ```
-
 lang-workbench/
-├── README.md
-├── Makefile
-├── docker-compose.yaml
-├── Dockerfile
-├── LICENSE
+├── Dockerfile              Ubuntu 24.04 image — all toolchains installed and validated at build time
+├── docker-compose.yaml     Single service, workspace bind-mounted into the container
+├── Makefile                Container lifecycle — up, down, bash, docker_clean_all
 └── workspace/
-├── Makefile
-├── src/
-│   ├── arm_lang.s
-│   ├── bash_lang.sh
-│   ├── c_lang.c
-│   ├── cpp_lang.cpp
-│   ├── csharp_lang.cs
-│   ├── go_lang.go
-│   ├── Java_lang.java
-│   ├── javascript_lang.js
-│   ├── php_lang.php
-│   ├── python_lang.py
-│   ├── risc_v_lang.s
-│   ├── rust_lang.rs
-│   └── x86_64_lang.s
-└── tutorials/
-├── 1_programming_paradigms/
-├── 2_data_structures_and_algorithms/
-├── 3_design_patterns/
-├── 4_cryptography/
-├── 5_parallel_programming/
-└── 6_networking/
-
+    ├── Makefile            Per-language compile and run targets
+    └── src/
+        ├── bash_lang.sh
+        ├── x86_64_lang.s
+        ├── arm_lang.s
+        ├── risc_v_lang.s
+        ├── c_lang.c
+        ├── cpp_lang.cpp
+        ├── csharp_lang.cs
+        ├── rust_lang.rs
+        ├── go_lang.go
+        ├── java_lang.java
+        ├── php_lang.php
+        ├── python_lang.py
+        └── javascript_lang.js
 ```
 
----
-
-## The project
-
-### What is the Workspace?
-
-The **workspace** folder is where the `src` (implementation of simple examples in many languages, from different types of assembly to JavaScript) and the `tutorials` folder (tutorials about core programming concepts, programming paradigms, data structures and algorithms, design patterns, cryptography, etc..) are implemented.
-
-**Current compatibility:**
-
-| Language            |
-| ------------------- |
-| **Bash**            |
-| **x86-64 assembly** |
-| **Risc V assembly** |
-| **Arm assembly**    |
-| **C**               |
-| **C++**             |
-| **C#**              |
-| **Rust**            |
-| **Go**              |
-| **Java**            |
-| **PHP**             |
-| **Python**          |
-| **JavaScript**      |
-
-| Tutorials           |
-| ------------------- |
-
-+ What is the src Folder?
-
-The **src** folder contains simple "Hello World" code for each language implemented. Each language or file will have a dedicated section in the outer Makefile for compiling and running. For C and C++, they will command the compilation steps one by one (preprocessing, compilation, assembly, and linking).
-
-**Note:** .
-
-+ What is the tutorials Folder?
-
-The **tutorials** folder contains courses and tutorials about core programming concepts (programming paradigms, data structures and algorithms, design patterns, cryptography, etc..). Note that for now all courses and tutorials will be in C++. You can work on the tutorials folder from your host because it will be bind-mounted over Docker, so you can create new files and play with different courses and languages.
-
-**Note:** All the tutorials will be in C++.
+The `workspace/` folder is bind-mounted into the container at `/workspace`. Any file you create or edit on your host is immediately available inside the container — no rebuild required.
 
 ---
 
-## Start Up
-### Set up the environment
+## Prerequisites
+
+- Docker
+- Docker Compose
+
+Nothing else. All compilers, interpreters, and toolchains are installed inside the container at build time and validated on every build.
+
+---
+
+## Setup
 
 **Clone the repository**
 
 ```
-
-git clone [https://github.com/Rhaytou/lang-workbench.git](https://github.com/Rhaytou/lang-workbench.git)
-
-```
-
-**Change directory**
-
-```
-
-cd ./lang-workbench
-
+git clone https://github.com/Rhaytou/lang-workbench.git
+cd lang-workbench
 ```
 
 **Start the container**
 
 ```
-
 make up
-
 ```
 
-**Get to the container (inside the /workspace)**
+**Open a shell inside the container**
 
 ```
-
 make bash
-
 ```
 
-**Note**: After `make bash` you will be inside the container in the `/workspace` folder:
-    - You can go to the `src` folder for testing the languages and their commands that you can browse inside `/workspace/Makefile`. Make sure you are located at `/workspace` to be able to work with the Makefile targets for files inside `src`.
-    - Or you can browse and test courses inside the `/workspace/tutorials`.
-
-## Coming Soon
-
-### Workspace/src
-
-* I will soon add a workflow for reverse engineering using many tools.
-* I will soon add a workflow for debugging with gdb.
-* Clang.
-
-### Workspace/tutorials
-
-* I will soon add the first 5 courses.
+You will land at `/workspace`, with the full toolchain available and all source files in `./src`.
 
 ---
 
-## Contribute
+## Usage
 
-This section will be updated soon.
+All compile and run targets are defined in `workspace/Makefile`. Run them from `/workspace` inside the container.
+
+### Bash
+
+```
+make chmod_bash
+make run_bash
+```
+
+### C
+
+Step-by-step — each compilation stage is exposed individually:
+
+```
+make preprocessing_c    # .c → .i  (preprocessor)
+make compilation_c      # .i → .s  (compiler)
+make assembly_c         # .s → .o  (assembler)
+make linking_c          # .o → bin (linker)
+make run_c
+```
+
+Or compile directly:
+
+```
+make compile_c
+make run_c
+```
+
+### C++
+
+```
+make preprocessing_cpp
+make compilation_cpp
+make assembly_cpp
+make linking_cpp
+make run_cpp
+```
+
+Or compile directly:
+
+```
+make compile_cpp
+make run_cpp
+```
+
+### x86-64 Assembly
+
+```
+make compile_ass_x86_64
+make run_ass_x86_64
+```
+
+> The host architecture must be x86-64.
+
+### ARM Assembly
+
+```
+make compile_ass_arm
+make run_ass_arm
+```
+
+> Compiled for AArch64, executed under QEMU — runs on any host.
+
+### RISC-V Assembly
+
+```
+make compile_ass_risc_v
+make run_ass_risc_v
+```
+
+> Compiled for riscv64, executed under QEMU — runs on any host.
+
+### C#
+
+```
+make compile_csharp
+make run_csharp
+```
+
+### Rust
+
+```
+make compile_rust
+make run_rust
+```
+
+### Go
+
+```
+make compile_go
+make run_go
+```
+
+### Java
+
+```
+make compile_java
+make run_java
+```
+
+### PHP
+
+```
+make run_php
+```
+
+### Python
+
+```
+make run_python
+```
+
+### JavaScript
+
+```
+make run_javascript
+```
 
 ---
+
+## Makefile Reference
+
+### Root Makefile — container lifecycle
+
+```
+make up                 # Build image and start the container
+make down               # Stop and remove the container and volumes
+make bash               # Open an interactive shell in the container
+make docker_clean_all   # Full Docker cleanup — containers, images, volumes, networks
+```
+
+### Per-service targets
+
+```
+make nlb_start          # Start the workbench service
+make nlb_down           # Stop the workbench service
+make nlb_restart        # Restart the workbench service
+make nlb_logs           # Show container logs
+make nlb_bash           # Open a shell in the container
+```
+
+---
+
+## License
+
+MIT
+
 
