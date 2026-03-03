@@ -1,0 +1,28 @@
+# Define all services (containers) to run
+services:
+  # Main environment service
+  env-workbench_service:
+    # Name of the running container
+    container_name: env-workbench_container
+
+    # Build configuration for the Docker image
+    build:
+      # Build context (current directory)
+      context: .
+      # Dockerfile to use for building the image
+      dockerfile: Dockerfile
+
+    # Mount the local 'workspace' folder into the container
+    volumes:
+      - ./workspace:/workspace
+
+    # Set the working directory inside the container
+    working_dir: /workspace
+
+    # Keep the container running with an interactive terminal
+    tty: true
+    stdin_open: true
+
+
+
+
