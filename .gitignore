@@ -1,0 +1,72 @@
+# ============================================================
+# Lang Workbench — .gitignore
+# ============================================================
+
+
+# Project Utilities
+lang-workbench.txt
+
+
+# Environment
+.env
+envName/
+
+
+# Bash
+# No build artifacts
+
+
+# C
+src/c_lang.o
+src/c_lang
+
+
+# C++
+src/cpp_lang.o
+src/cpp_lang
+
+
+# x86-64 Assembly
+src/x86_64_lang
+
+
+# ARM Assembly
+src/arm_lang
+
+
+# RISC-V Assembly
+src/risc_v_lang
+
+
+# C#
+src/csharp_lang.exe
+
+
+# Rust
+src/rust_lang
+
+
+# Go
+src/go_lang
+
+
+# Java
+src/*.class
+
+
+# PHP
+# No build artifacts
+
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+
+# JavaScript
+node_modules/
+
+
+
+
