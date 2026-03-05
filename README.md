@@ -236,11 +236,11 @@ make docker_clean_all   # Full Docker cleanup — containers, images, volumes, n
 ### Per-service targets
 
 ```
-make nlb_start          # Start the workbench service
-make nlb_down           # Stop the workbench service
-make nlb_restart        # Restart the workbench service
-make nlb_logs           # Show container logs
-make nlb_bash           # Open a shell in the container
+make ew_start          # Start the workbench service
+make ew_down           # Stop the workbench service
+make ew_restart        # Restart the workbench service
+make ew_logs           # Show container logs
+make ew_bash           # Open a shell in the container
 ```
 
 ---

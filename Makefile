@@ -23,23 +23,23 @@ docker_clean_all:
 # Services
 ## env-workbench
 ### Start the service
-nlb_start:
+ew_start:
 	docker compose up -d --build env-workbench_service
 
 ### Down the service
-nlb_down:
+ew_down:
 	docker compose stop env-workbench_service
 
 ### Restart the service
-nlb_restart:
+ew_restart:
 	docker compose up -d --build env-workbench_service
 
 ### Show service's logs
-nlb_logs:
+ew_logs:
 	docker compose logs env-workbench_service
 
 ### Open an interactive bash shell
-nlb_bash:
+ew_bash:
 	docker exec -it env-workbench_container sh
 
 
